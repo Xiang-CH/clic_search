@@ -84,10 +84,15 @@ search_client_tc = SearchClient(
 #         TOPICS.append(topic.strip())
 #         topic = f.readline()
 
+app = Flask(__name__)
+FlaskInstrumentor().instrument_app(app)
+cors = CORS(app)
+
 #read translated topic names
+static_folder_path = app.static_folder
 TOPIC_NAMES = {}
 TOPICS = ""
-with open("./topic_translation.csv", 'r', encoding='utf8') as file:
+with open(os.path.join(static_folder_path, "/topic_translation.csv"), 'r', encoding='utf8') as file:
     csv_reader = csv.reader(file)
     next(csv_reader)  # Skip header row if present
     for row in csv_reader:
@@ -100,10 +105,6 @@ with open("./topic_translation.csv", 'r', encoding='utf8') as file:
 
 TOPICS = 'Topic List: (' + TOPICS[:-2] + ')'
 FILTERSTR = "search.in(topic, '{}' , '|')"
-
-app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app)
-cors = CORS(app)
 
 GPTANSWER = {}
 clean_GPTANSWER_thread = Thread(target=GPTANSWER_clean, daemon=True)
