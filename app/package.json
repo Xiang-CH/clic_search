@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "backend-dev": "cd ./backend && python -m venv backend_env && source backend_env/bin/activate && pip install -r requirements.txt && python -m flask run --port=5000 --reload --debug",
+    "dev": "concurrently \"vite\" \"npm run backend-dev\"",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"

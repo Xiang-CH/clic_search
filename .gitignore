@@ -18,3 +18,5 @@ temp
 
 .idea
 .vscode 
+/app/backend/helper/__pycache__
+.vercel
