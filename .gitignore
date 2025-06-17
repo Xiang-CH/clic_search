@@ -1,14 +1,15 @@
 .azure
 
-/app/backend/backend_env/*
+/app/backend_env
+/app/backend_env/*
 
 .DS_Store
 *.DS_Store
 
 __pycache__
 
-/app/backend/static
-/app/backend/static/*
+/app/static
+/app/static/*
 .env
 
 /scripts/data/*
@@ -18,5 +19,5 @@ temp
 
 .idea
 .vscode 
-/app/backend/helper/__pycache__
+/app/helper/__pycache__
 .vercel
