@@ -90,9 +90,10 @@ cors = CORS(app)
 
 #read translated topic names
 static_folder_path = app.static_folder
+print("static_folder_path:", static_folder_path)
 TOPIC_NAMES = {}
 TOPICS = ""
-with open(os.path.join(static_folder_path, "/topic_translation.csv"), 'r', encoding='utf8') as file:
+with open(os.path.join(static_folder_path, "topic_translation.csv"), 'r', encoding='utf8') as file:
     csv_reader = csv.reader(file)
     next(csv_reader)  # Skip header row if present
     for row in csv_reader:
