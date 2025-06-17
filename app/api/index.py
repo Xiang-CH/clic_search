@@ -113,6 +113,7 @@ clean_GPTANSWER_thread.start()
 
 @app.route("/<path:path>")
 def static_file(path):
+    print(path)
     if path == "search" or path == "refine":
         return redirect("index.html")
     return app.send_static_file(path)
