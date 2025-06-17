@@ -1,0 +1,7 @@
+Flask==2.2.5
+flask-cors==4.0.0
+azure-identity==1.13.0
+openai==1.87.0
+azure-search-documents==11.4.0b6
+python-dotenv
+opentelemetry-instrumentation-flask

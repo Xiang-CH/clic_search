@@ -1,0 +1,12 @@
+.caption em{
+    font-weight: bold;
+    font-size: 20px;
+    color: #340404;
+}
+
+.QuickAnswer{
+    padding: 0 5px 10px 5px;
+    margin-bottom: 20px;
+    width: 655px;
+    /* border: 1px solid #000000; */
+}

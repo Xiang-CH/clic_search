@@ -1,0 +1,15 @@
+.progressBarContainer{
+    padding-top: 40px;
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* #MuiLinearProgress-root{
+    height: 7px;
+} */
+
+.customLinearHeight {
+    height: 10px; /* Adjust the height value according to your preference */
+}

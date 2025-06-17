@@ -1,0 +1,48 @@
+.supContainer{
+    /* color:red */
+    color: #381c1c;
+    background-color: #e5dfd5;
+    border-radius: 4px;
+    text-decoration: none;
+    margin: 0px, 4px;
+}
+.cardStyle{
+    transition-duration: 1s;
+    /* animation-name: width-animation; */
+    animation-direction: reverse;
+    animation-duration: 1s;
+}
+
+.expandedCardStyle{
+    width: 1137px;
+    animation-name: width-animation;
+    animation-duration: 0.3s;
+    transition-duration: 0.3s;
+    position: absolute;
+    overflow: visible;
+    z-index: 3;
+    top:0;
+    right:0;
+    box-shadow: 1px 1px 5px 5px #888888 !important;
+}
+
+.loading{
+    display:inline-block;
+    clip-path: inset(0 3ch 0 0);
+    animation: l 1s steps(4) infinite;
+}
+
+@keyframes width-animation {
+    from {
+        width: 100%;
+    }
+    to {
+        width: clac(1137px);
+    }
+}
+
+@keyframes l {
+    to {
+      clip-path: inset(0 -1ch 0 0)
+    }
+  }

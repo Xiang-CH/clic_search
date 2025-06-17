@@ -1,0 +1,74 @@
+.Container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    /* margin-top: 70px; */
+    /* margin-left: 40px; */
+    width: auto;
+}
+
+@media screen and (max-width: 1200px) {
+    .wrapper{
+        display: block !important;
+    }
+}
+
+.wrapper{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    overflow: auto;
+    position: relative;
+    min-height: 100vh;
+    position: relative;
+}
+  
+.subContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-top: 10px;
+}
+
+.searchContainer{
+    /* height: 40px; */
+    /* margin-left: 40px;
+    margin-top: 20px; */
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    margin-top: 10px;
+    /* min-height: 80vh; */
+}
+
+.filterContainer{
+    display: flex;
+    align-items: flex-start;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.resultContainer{
+    display: flex;
+    position: relative;
+}
+
+.resultRightContainer{
+    margin-top: 20px;
+    width: 450px;
+    position: relative;
+}
+.overlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.15);
+    z-index: 3;
+    transition-duration: 1s;
+}
+/* align-items: normal|stretch|positional alignment|flex-start|flex-end|baseline|initial|inherit; */
