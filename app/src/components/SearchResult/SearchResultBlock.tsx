@@ -6,14 +6,16 @@ import {useTheme} from '@mui/material/styles'
 
 interface Props {
     title: string;
-    caption: string;
+    caption: string | null;
     topic: string;
     url: string;
-    hightlight: string;
+    hightlight: string | null;
     index: number;
+    reranker_score: number | null;
+    score: number;
 }
 
-export const SearchResultBlock = ({title, caption, topic, url, hightlight, index}: Props) => {
+export const SearchResultBlock = ({title, caption, topic, url, hightlight, index, reranker_score, score}: Props) => {
 
     const toSentenceCase = (camelCase: string) => {
         if (camelCase) {
@@ -66,7 +68,8 @@ export const SearchResultBlock = ({title, caption, topic, url, hightlight, index
                                         Rank {index + 1}
                             </Typography>
                         </Box>
-                        
+                        {reranker_score && <Typography color = "secondary" sx={{marginBottom:1, left: 0, component: "span", display: "inline-block"}}>reranker_score: {reranker_score.toFixed(2)}</Typography> } {"    "}
+                        <Typography color = "secondary" sx={{marginBottom:1, left: 0, component: "span", display: "inline-block"}}>search_score: {score.toFixed(4)}</Typography>
                     </CardContent>
                 </CardActionArea>
             </Card>

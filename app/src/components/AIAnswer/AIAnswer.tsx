@@ -7,8 +7,10 @@ import {
     Icon,
     IconButton,
 } from "@mui/material";
-import Parser from "html-react-parser";
+// import Parser from "html-react-parser";
 // import React from 'react';
+import Markdown from 'react-markdown'
+import rehypeRaw from "rehype-raw";
 import styles from "./AIAnswer.module.css";
 import { useEffect, useState } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -73,6 +75,8 @@ export function AIAnswer({
                             });
                         }
 
+                        // return `[\[${citationIndex}\]](${path})`;
+
                         return renderToStaticMarkup(
                             <Link
                                 title={part}
@@ -106,27 +110,12 @@ export function AIAnswer({
             }}
         >
             <CardContent>
-                {language == "en-US" && (
-                    <Typography
-                        style={{ marginTop: 5, fontSize: 20, fontWeight: 600 }}
+                <Typography
+                        style={{ marginTop: 0, fontSize: 15, fontWeight: 600, color: theme.palette.secondary.main }}
                     >
-                        GPT Summary
-                    </Typography>
-                )}
-                {language == "zh-CN" && (
-                    <Typography
-                        style={{ marginTop: 5, fontSize: 20, fontWeight: 600 }}
-                    >
-                        GPT 智能总结（预览）
-                    </Typography>
-                )}
-                {language == "zh-HK" && (
-                    <Typography
-                        style={{ marginTop: 5, fontSize: 20, fontWeight: 600 }}
-                    >
-                        GPT 智能總結（預覽）
-                    </Typography>
-                )}
+                        {language == "en-US"? "GPT Summary": language == "zh-CN"? "GPT 智能总结（预览）": "GPT 智能總結（預覽）"}
+                </Typography>
+     
                 <IconButton
                     sx={{
                         position: "absolute",
@@ -166,12 +155,14 @@ export function AIAnswer({
                                           whiteSpace: "pre-wrap",
                                       }
                             }
-                            dangerouslySetInnerHTML={{
-                                __html: fragments.join(""),
-                            }}
+                            // dangerouslySetInnerHTML={{
+                            //     __html: fragments.join(""),
+                            // }}
                         >
-                            {/* {Parser(fragments.join(""))} */}
                         </Typography>
+                        <Markdown rehypePlugins={[rehypeRaw]}>
+                            {fragments.join("")}
+                        </Markdown>
                         {loading && (
                             <Typography
                                 sx={{

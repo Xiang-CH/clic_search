@@ -26,7 +26,7 @@ openai = AzureOpenAI(
 )
 
 DEBUG = True
-QUICK_ANSWER_THRESHOLD = 0.9
+QUICK_ANSWER_THRESHOLD = 0.99
 
 AZURE_SEARCH_SERVICE = os.environ.get("AZURE_SEARCH_SERVICE")
 AZURE_SEARCH_KEY = os.environ.get("AZURE_SEARCH_KEY")
@@ -62,20 +62,17 @@ def GPTANSWER_clean():
 search_client_en = SearchClient(
     endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
     index_name="clic-index-en",
-    credential=AzureKeyCredential(AZURE_SEARCH_KEY), #azure_credential,
-    api_version="2023-07-01-Preview")
+    credential=AzureKeyCredential(AZURE_SEARCH_KEY))
 
 search_client_sc = SearchClient(
     endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
     index_name="clic-index-sc",
-    credential=AzureKeyCredential(AZURE_SEARCH_KEY), #azure_credential,
-    api_version="2023-07-01-Preview")
+    credential=AzureKeyCredential(AZURE_SEARCH_KEY))
 
 search_client_tc = SearchClient(
     endpoint=f"https://{AZURE_SEARCH_SERVICE}.search.windows.net",
     index_name="clic-index-tc",
-    credential=AzureKeyCredential(AZURE_SEARCH_KEY), #azure_credential,
-    api_version="2023-07-01-Preview")
+    credential=AzureKeyCredential(AZURE_SEARCH_KEY))
 
 # TOPICS = []
 # with open("./static/TOPICS.txt", "r") as f:
@@ -117,7 +114,7 @@ clean_GPTANSWER_thread.start()
 def static_file(path):
     print(path)
     if path == "search" or path == "refine":
-        return redirect("index.html")
+        return redirect("/")
     return app.send_static_file(path)
 
 @app.route("/getTopics", methods=["GET"])
@@ -166,7 +163,7 @@ def search():
         # search_client = search_client_en
         r = search_client.search(query_text,
                                 filter=filter,
-                                query_type=QueryType.SEMANTIC, 
+                                query_type=QueryType.SEMANTIC,
                                 query_language="en-us" if language == "en-US" else ("zh-cn" if language == "zh-CN" else "zh-tw"),
                                 query_speller="lexicon" if language == "en-US" else None,
                                 query_answer="extractive", 
@@ -186,7 +183,7 @@ def search():
         quick_answer, quick_answer_highlights = None, None
 
         answers = r.get_answers()
-        if answers and len(answers) <= 0:
+        if answers and len(answers) > 0:
             answer = answers[0]
             if answer and answer.score and answer.score > QUICK_ANSWER_THRESHOLD:
                 quick_answer = answer.text
@@ -222,8 +219,10 @@ def search():
                     "title": result["title"][splice_index:],
                     "url": result["address"],
                     "topic": result["topic"],
-                    "caption": result["@search.captions"][0].text if len(result["@search.captions"]) > 0 else None,
-                    "caption_highlight": result["@search.captions"][0].highlights if len(result["@search.captions"]) > 0 else None
+                    "reranker_score": result["@search.reranker_score"],
+                    "score": result["@search.score"],
+                    "caption": result["@search.captions"][0].text if result["@search.captions"] and len(result["@search.captions"]) > 0 else None,
+                    "caption_highlight": result["@search.captions"][0].highlights if result["@search.captions"] and len(result["@search.captions"]) > 0 else None
                 })
                 if (i < 6):
                     source_information += "\n{title: '"+ result["title"][splice_index:] + "', content: '" + result['content'] + "'},\n"
@@ -253,23 +252,26 @@ def send_messages(messages):
 def gptAnswer(user_question, source, language):
     try:
         ensure_openai_token()
-        system_message = """Assistant that helps people with their Hong Kong legal questions by providing summary of content in the Provided Sources.
-         Only summarise the sources that are closely related to the user query. DO NOT include the irrelevant sources. 
-         DO NOT include any information that are not from the sources below, and DO NOT include irrelevant information from the relevant sources. MAKE SURE the summary is relevant to the user query.
-         Reduce the unnecessary information and emotional support, and focus on legal information.
-        Be brief in your summary by extracting all the information in the source that are related to any key points in the question.
-        Reponse generated must not be based on prior knowledge that are not from the sources below. Do not use internet resource. Do not ask questions.
-        Each source is in json form surrounded by {} with key title and content, always include the title of the source for each fact you use in the response.
-        Each paragraph of the summary must have a reference to its source.
-        Use square brackets to reference the source by it's title, e.g. [title of source one]. Don't combine sources, list each source separately, e.g. [title of source one][title of source two]. Do not include the word "title" in the citation, do not index any reference.
-        """
+        system_message = """You are a Hong Kong Legal Expert that helps people with their legal questions by providing extracting relevant key points from the Provided Sources.
+If the user if not a straight forward question rather a legal situation, alway first analysis all the aspects of the situation and provide all the different resolution to different scenarios.
+
+Only summarise the sources that are closely related to the user query. DO NOT include the irrelevant sources. 
+DO NOT include any information that are not from the sources below, and DO NOT include irrelevant information from the relevant sources. MAKE SURE the summary is relevant to the user query.
+Response generated must not be based on prior knowledge that are not from the sources below. Do not use internet resource. Do not ask questions.
+Reduce the unnecessary information and emotional support, and focus on legal information.
+
+Be brief in your summary by extracting all the information in the source that are related to any key points in the question.
+Provide answers in markdown directly format and provide readability by adding headings (no larger than ###), section, bold and lists.
+Each source is in json form surrounded by {} with key title and content, always include the title of the source for each fact you use in the response.
+Each paragraph of the summary must have a reference to its source.
+Use square brackets to reference the source by it's title, e.g. [title of source one]. Don't combine sources, list each source separately, e.g. [title of source one][title of source two]. Do not include the word "title" in the citation, do not index any reference. """
 
         user_question_source = "User query: " + user_question + "\n\nSources: \n" + source
     
-        if language == "en-US":
-            if (len(user_question_source)>10000): user_question_source = user_question_source[:10000]
-        else:
-            if (len(user_question_source)>2000): user_question_source = user_question_source[:2000]
+        # if language == "en-US":
+        #     if (len(user_question_source)>10000): user_question_source = user_question_source[:10000]
+        # else:
+        #     if (len(user_question_source)>2000): user_question_source = user_question_source[:2000]
         
         print(user_question_source)
         conversation = [

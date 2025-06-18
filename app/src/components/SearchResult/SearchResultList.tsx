@@ -22,6 +22,8 @@ export const SearchResultList = ({searchResult, quickAnswer} : Props) => {
                     topic={row.topic} 
                     url={row.url}
                     index = {index}
+                    reranker_score = {row.reranker_score}
+                    score = {row.score}
                 />
             ))}
         </div>

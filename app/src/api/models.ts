@@ -6,11 +6,13 @@ export type SearchResponse = {
 }
 
 export type SearchResult = {
-    caption: string;
-    caption_highlight: string;
+    caption: string | null;
+    caption_highlight: string | null;
     title: string;
     topic: string;
     url: string;
+    reranker_score: number | null;
+    score: number;
 }
 
 export type TopicResponse = {
