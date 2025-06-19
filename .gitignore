@@ -13,6 +13,7 @@ __pycache__
 /app/static/*
 .env
 
+data
 /scripts/data/*
 /scripts/contentData.json
 topic-indexs.json
